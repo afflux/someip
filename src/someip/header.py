@@ -161,7 +161,7 @@ payload: {len(self.payload)} bytes"""
         size, builder = cls._parse_header(parsed)
         if len(buf_rest) < size - 8:
             raise IncompleteReadError(
-                f"packet too short, expected {size+4}, got {len(buf)}"
+                f"packet too short, expected {size + 4}, got {len(buf)}"
             )
         payload_b, buf_rest = buf_rest[: size - 8], buf_rest[size - 8 :]
 
@@ -485,12 +485,12 @@ class SOMEIPSDEntry:
 
         if oi1 + no1 > num_options:
             raise ParseError(
-                f"SD entry options_1 ({oi1}:{oi1+no1}) out of range ({num_options})"
+                f"SD entry options_1 ({oi1}:{oi1 + no1}) out of range ({num_options})"
             )
 
         if oi2 + no2 > num_options:
             raise ParseError(
-                f"SD entry options_2 ({oi2}:{oi2+no2}) out of range ({num_options})"
+                f"SD entry options_2 ({oi2}:{oi2 + no2}) out of range ({num_options})"
             )
 
         if sd_type in (SOMEIPSDEntryType.Subscribe, SOMEIPSDEntryType.SubscribeAck):
