@@ -10,7 +10,6 @@ import unittest
 import unittest.mock
 from dataclasses import replace
 
-import someip.config as cfg
 import someip.header as hdr
 import someip.sd as sd
 import someip.service as service
@@ -134,12 +133,6 @@ class TestService(unittest.IsolatedAsyncioTestCase):
         self.prot.transport.get_extra_info.side_effect = get_extra_info
 
         self.prot.start_announce(sd)
-
-        ep = hdr.IPv4EndpointOption(
-            ipaddress.IPv4Address(ip),
-            port=port,
-            l4proto=hdr.L4Protocols.UDP,
-        )
 
         self.assertEqual(len(sd.method_calls), 1)
         sd.announce_service.assert_called_once()
