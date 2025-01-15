@@ -10,7 +10,6 @@ import unittest
 import unittest.mock
 from dataclasses import replace
 
-import someip.config as cfg
 import someip.header as hdr
 import someip.sd as sd
 import someip.service as service
@@ -135,25 +134,12 @@ class TestService(unittest.IsolatedAsyncioTestCase):
 
         self.prot.start_announce(sd)
 
-        ep = hdr.IPv4EndpointOption(
-            ipaddress.IPv4Address(ip),
-            port=port,
-            l4proto=hdr.L4Protocols.UDP,
-        )
-
         self.assertEqual(len(sd.method_calls), 1)
         sd.announce_service.assert_called_once()
         inst = sd.announce_service.call_args[0][0]
         self.assertEqual(
-            inst.service,
-            cfg.Service(
-                service_id=self.prot.service_id,
-                instance_id=self.prot.instance_id,
-                major_version=self.prot.version_major,
-                minor_version=self.prot.version_minor,
-                options_1=(ep,),
-                eventgroups=frozenset({self.prot.eventgroup.id}),
-            ),
+            inst,
+            self.prot.service_instance
         )
         self.assertEqual(inst.listener, self.prot)
         self.assertEqual(inst.announcer, sd)
@@ -165,15 +151,7 @@ class TestService(unittest.IsolatedAsyncioTestCase):
             sd.method_calls,
             [
                 unittest.mock.call.stop_announce_service(
-                    cfg.Service(
-                        service_id=self.prot.service_id,
-                        instance_id=self.prot.instance_id,
-                        major_version=self.prot.version_major,
-                        minor_version=self.prot.version_minor,
-                        options_1=(ep,),
-                        eventgroups=frozenset({self.prot.eventgroup.id}),
-                    ),
-                    self.prot,
+                    self.prot.service_instance,
                 )
             ],
         )
